@@ -17,11 +17,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
 {
-    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+    In = ParameterLocation.Header,
     Name = "Authorization",
-    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+    Type = SecuritySchemeType.ApiKey
 });
 
 options.OperationFilter<SecurityRequirementsOperationFilter>();

@@ -59,57 +59,53 @@ namespace SuperHeroApi.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<SuperHero>> CreateHero(SuperHero heroDto)
-        //{
-        //    try
-        //    {
-        //        var hero = await this._context.SuperHeroes.AddAsync(heroDto);
+        [HttpPost]
+        public async Task<ActionResult<SuperHero>> createhero(SuperHero herodto)
+        {
+            try
+            {
 
-        //        var result = await this._context.SaveChangesAsync();
+                var result = await this._repo.AddSuperHero(herodto);
 
-        //        return (result > 0) ? Ok(hero.Entity) : BadRequest("Hero not created");
+                return (result != null) ? Ok(result) : BadRequest("hero not created");
 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHero(int id)
+        {
+            var result = await this._repo.DeleteSuperHero(id);
 
-        //    }catch(Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+            if (result == null)
+            {
+                return NotFound("Hero not found");
+            }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteHero(int id)
-        //{
-        //    var hero = await this._context.SuperHeroes.FindAsync(id);
+            return StatusCode(204);
+        }
 
-        //    if(hero == null)
-        //    {
-        //        return NotFound("Hero not found");
-        //    }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<SuperHero>> UpdateHero(int id, SuperHero hero)
+        {
+            if(id != hero.Id)
+            {
+                return BadRequest();
+            }
 
-        //    this._context.SuperHeroes.Remove(hero);
+            var result = await this._repo.UpdateSuperHero(id, hero);
 
-        //    var result = await this._context.SaveChangesAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
 
-        //    return StatusCode(204);
-        //}
-
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult<SuperHero>> UpdateHero(int id, SuperHero hero)
-        //{
-        //    var dbHero = await this._context.SuperHeroes.FindAsync(id);
-
-        //    if (dbHero == null) { return NotFound("Hero not found"); }
-
-        //    var result = UpdateHero(hero, dbHero);
-
-        //    this._context.SuperHeroes.Update(result);
-
-        //    await this._context.SaveChangesAsync();
-
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
 
 
     }
