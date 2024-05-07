@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SuperHeroApi.Modles;
 using SuperHeroApi.Repo.Abstract;
 
 namespace SuperHeroApi.Controllers
 {
 
+    
     [Route("api/[controller]")]
     [ApiController]
     public class SuperHeroController : ControllerBase
@@ -23,6 +25,7 @@ namespace SuperHeroApi.Controllers
 
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<SuperHero>> GetSuperHero(int id)
         {
