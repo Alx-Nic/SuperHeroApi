@@ -1,4 +1,4 @@
-﻿namespace SuperHeroApi.Modles
+﻿namespace SuperHeroApi.Models.SuperHero
 {
     public class SuperHero
     {

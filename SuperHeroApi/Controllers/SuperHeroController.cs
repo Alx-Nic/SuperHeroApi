@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SuperHeroApi.Modles;
+using SuperHeroApi.Models.SuperHero;
 using SuperHeroApi.Repo.Abstract;
 
 namespace SuperHeroApi.Controllers
 {
 
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class SuperHeroController : ControllerBase
     {
+
         private readonly ISuperHeroRepository _repo;
+        private readonly ILogger<SuperHeroController> _logger;
 
         public SuperHeroController(
             ISuperHeroRepository superHeroRepository,
@@ -20,6 +22,7 @@ namespace SuperHeroApi.Controllers
 
         {
             this._repo = superHeroRepository;
+            this._logger = logger;
             logger.LogInformation($"Controller has got:{foo.myNumber}");
 
 
@@ -44,14 +47,14 @@ namespace SuperHeroApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SuperHero>>> GetAllHeroes()
+        public async Task<ActionResult<List<SuperHero>>> GetAllHeroes([FromQuery]SuperHeroFilterParamsV1 filters)
         {
             try
             {
 
-                var result = await this._repo.GetSuperHeroesAsync();
+                var result = await this._repo.GetSuperHeroesAsync(filters);
 
-                return result.Any() ? Ok(result) : NoContent();
+                return result.Any() ? Ok(result) : NotFound();
             }
             catch (Exception)
             {

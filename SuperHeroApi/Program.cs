@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using SuperHeroApi;
 using SuperHeroApi.Data;
+using SuperHeroApi.Models.SuperHero;
 using SuperHeroApi.Repo.Abstract;
 using SuperHeroApi.Repo.Concrete;
 using Swashbuckle.AspNetCore.Filters;
@@ -45,6 +46,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 //Repo services
 builder.Services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
 builder.Services.AddScoped<FooService>();
+
+builder.Services.AddSingleton<ISuperHeroFilterParams, SuperHeroFilterParamsV1>();
 
 var app = builder.Build();
 

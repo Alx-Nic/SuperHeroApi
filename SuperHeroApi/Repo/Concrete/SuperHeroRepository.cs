@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using SuperHeroApi.Data;
-using SuperHeroApi.Modles;
+using SuperHeroApi.Helpers;
+using SuperHeroApi.Models.PaginationFilters;
+using SuperHeroApi.Models.SuperHero;
 using SuperHeroApi.Repo.Abstract;
+using System;
 
 namespace SuperHeroApi.Repo.Concrete
 {
@@ -52,9 +56,28 @@ namespace SuperHeroApi.Repo.Concrete
             return await this._context.SuperHeroes.FindAsync(id);
         }
 
-        public async Task<IEnumerable<SuperHero?>> GetSuperHeroesAsync()
+        public async Task<IEnumerable<SuperHero?>> GetSuperHeroesAsync(ISuperHeroFilterParams filters)
         {
-            return await this._context.SuperHeroes.ToListAsync();
+
+            IQueryable<SuperHero> query = this._context.SuperHeroes;
+
+            if (filters != null)
+            {
+                foreach (var property in typeof(ISuperHeroFilterParams).GetProperties())
+                {
+                    var filterValue = (string)property.GetValue(filters);
+
+                    if (!string.IsNullOrEmpty(filterValue))
+                    {
+                        var predicate = ExpressionHelper.GetFilterExpression<SuperHero>(filterValue, property.Name);
+                        query = query.Where(predicate);
+                    }
+                }
+            }
+
+
+
+            return await query.ToListAsync();
         }
 
         public async Task<SuperHero?> UpdateSuperHero(int id, SuperHero updateSuperHero)
