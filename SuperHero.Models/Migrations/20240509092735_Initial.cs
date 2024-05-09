@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SuperHeroApi.Migrations
+namespace HeroMSVC.Models.Migrations
 {
     /// <inheritdoc />
-    public partial class addidentityauth : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,23 @@ namespace SuperHeroApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SuperHeroes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Place = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Power = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SuperHeroes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +173,11 @@ namespace SuperHeroApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "SuperHeroes",
+                columns: new[] { "Id", "FirstName", "LastName", "Name", "Place", "Power" },
+                values: new object[] { 1, "Peter", "Parker", "SpiderMan", "NewYork City", 85 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -213,6 +235,9 @@ namespace SuperHeroApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "SuperHeroes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

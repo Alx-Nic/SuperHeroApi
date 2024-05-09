@@ -1,4 +1,4 @@
-﻿namespace SuperHeroApi.Models.PaginationFilters
+﻿namespace HeroMSVC.Models.PaginationFilters
 {
     public interface IPaginationFilters
     {

@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HeroMSVC.Models;
+using HeroMSVC.Models.SuperHero;
+using HeroMSVC.Repo.Abstract;
+using HeroMSVC.Repo.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using SuperHeroApi.Data;
-using SuperHeroApi.Helpers;
-using SuperHeroApi.Models.PaginationFilters;
-using SuperHeroApi.Models.SuperHero;
-using SuperHeroApi.Repo.Abstract;
+using Microsoft.Extensions.Logging;
 using System;
 
-namespace SuperHeroApi.Repo.Concrete
+namespace HeroMSVC.Repo.Concrete
 {
     public class SuperHeroRepository : ISuperHeroRepository
     {
@@ -15,51 +15,48 @@ namespace SuperHeroApi.Repo.Concrete
         private readonly ILogger<SuperHeroRepository> logger;
 
         public SuperHeroRepository(
-            SuperHeroDataContext context, 
-            ILogger<SuperHeroRepository> logger,
-            FooService fooService
+            SuperHeroDataContext context,
+            ILogger<SuperHeroRepository> logger
             )
         {
-            this._context = context;
+            _context = context;
             this.logger = logger;
-
-            logger.LogInformation($"SuperHeroRepository created, and got {fooService.myNumber}");
         }
 
         public async Task<SuperHero?> AddSuperHero(SuperHero newSuperHero)
         {
-            var hero = await this._context.SuperHeroes.AddAsync(newSuperHero);
+            var hero = await _context.SuperHeroes.AddAsync(newSuperHero);
 
-            var result = await this._context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
 
             return result > 0 ? hero.Entity : null;
         }
 
         public async Task<int?> DeleteSuperHero(int id)
         {
-            var hero = await this._context.SuperHeroes.FindAsync(id);
+            var hero = await _context.SuperHeroes.FindAsync(id);
 
             if (hero == null)
             {
                 return null;
             }
 
-            this._context.SuperHeroes.Remove(hero);
+            _context.SuperHeroes.Remove(hero);
 
-            var result = await this._context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
 
             return id;
         }
 
         public async Task<SuperHero?> GetSuperHeroById(int id)
         {
-            return await this._context.SuperHeroes.FindAsync(id);
+            return await _context.SuperHeroes.FindAsync(id);
         }
 
         public async Task<IEnumerable<SuperHero?>> GetSuperHeroesAsync(ISuperHeroFilterParams filters)
         {
 
-            IQueryable<SuperHero> query = this._context.SuperHeroes;
+            IQueryable<SuperHero> query = _context.SuperHeroes;
 
             if (filters != null)
             {
@@ -82,20 +79,20 @@ namespace SuperHeroApi.Repo.Concrete
 
         public async Task<SuperHero?> UpdateSuperHero(int id, SuperHero updateSuperHero)
         {
-            var dbHero = await this._context.SuperHeroes.FindAsync(id);
+            var dbHero = await _context.SuperHeroes.FindAsync(id);
 
             if (dbHero == null) { return null; }
 
             var result = UpdateHero(updateSuperHero, dbHero);
 
-            this._context.SuperHeroes.Update(result);
+            _context.SuperHeroes.Update(result);
 
-            await this._context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return result;
         }
 
-        private static SuperHero UpdateHero(SuperHero hero, SuperHero? dbHero)
+        private SuperHero UpdateHero(SuperHero hero, SuperHero? dbHero)
         {
 
             dbHero.Name = hero.Name;

@@ -1,12 +1,12 @@
+using HeroMSVC.Api;
+using HeroMSVC.Models;
+using HeroMSVC.Models.SuperHero;
+using HeroMSVC.Repo.Abstract;
+using HeroMSVC.Repo.Concrete;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
-using SuperHeroApi;
-using SuperHeroApi.Data;
-using SuperHeroApi.Models.SuperHero;
-using SuperHeroApi.Repo.Abstract;
-using SuperHeroApi.Repo.Concrete;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +29,7 @@ options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 builder.Services.AddDbContext<SuperHeroDataContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConfiguration"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConfiguration"), migrationOptions => migrationOptions.MigrationsAssembly("HeroMSVC.Models"));
 });
 
 builder.Services.AddAuthorization();

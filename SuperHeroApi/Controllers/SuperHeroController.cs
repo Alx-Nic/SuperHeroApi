@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SuperHeroApi.Models.SuperHero;
-using SuperHeroApi.Repo.Abstract;
+using HeroMSVC.Models.SuperHero;
+using HeroMSVC.Repo.Abstract;
 
-namespace SuperHeroApi.Controllers
+namespace HeroMSVC.Api.Controllers
 {
 
 
@@ -17,15 +17,11 @@ namespace SuperHeroApi.Controllers
 
         public SuperHeroController(
             ISuperHeroRepository superHeroRepository,
-            FooService foo, 
             ILogger<SuperHeroController> logger)
 
         {
-            this._repo = superHeroRepository;
-            this._logger = logger;
-            logger.LogInformation($"Controller has got:{foo.myNumber}");
-
-
+            _repo = superHeroRepository;
+            _logger = logger;
         }
 
         [Authorize]
@@ -35,7 +31,7 @@ namespace SuperHeroApi.Controllers
             try
             {
 
-                var result = await this._repo.GetSuperHeroById(id);
+                var result = await _repo.GetSuperHeroById(id);
 
                 return result != null ? Ok(result) : NotFound("Hero not found");
 
@@ -47,12 +43,12 @@ namespace SuperHeroApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SuperHero>>> GetAllHeroes([FromQuery]SuperHeroFilterParamsV1 filters)
+        public async Task<ActionResult<List<SuperHero>>> GetAllHeroes([FromQuery] SuperHeroFilterParamsV1 filters)
         {
             try
             {
 
-                var result = await this._repo.GetSuperHeroesAsync(filters);
+                var result = await _repo.GetSuperHeroesAsync(filters);
 
                 return result.Any() ? Ok(result) : NotFound();
             }
@@ -68,9 +64,9 @@ namespace SuperHeroApi.Controllers
             try
             {
 
-                var result = await this._repo.AddSuperHero(herodto);
+                var result = await _repo.AddSuperHero(herodto);
 
-                return (result != null) ? Ok(result) : BadRequest("hero not created");
+                return result != null ? Ok(result) : BadRequest("hero not created");
 
             }
             catch (Exception ex)
@@ -82,7 +78,7 @@ namespace SuperHeroApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHero(int id)
         {
-            var result = await this._repo.DeleteSuperHero(id);
+            var result = await _repo.DeleteSuperHero(id);
 
             if (result == null)
             {
@@ -95,12 +91,12 @@ namespace SuperHeroApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<SuperHero>> UpdateHero(int id, SuperHero hero)
         {
-            if(id != hero.Id)
+            if (id != hero.Id)
             {
                 return BadRequest();
             }
 
-            var result = await this._repo.UpdateSuperHero(id, hero);
+            var result = await _repo.UpdateSuperHero(id, hero);
 
             if (result == null)
             {
